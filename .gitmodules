@@ -1,0 +1,6 @@
+[submodule "Frontend"]
+	path = Frontend
+	url = https://github.com/Al3fabbrii/Frontend.git
+[submodule "Backend"]
+	path = Backend
+	url = https://github.com/Al3fabbrii/Backend.git
