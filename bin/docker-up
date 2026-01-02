@@ -1,0 +1,28 @@
+#!/usr/bin/env bash
+# Script per avviare Docker Compose con i permessi corretti
+# Questo script esporta automaticamente UID e GID per evitare problemi di permessi
+# Uso: ./bin/docker-up
+#      ./bin/docker-up -d  (modalità detached)
+
+set -e
+
+cd "$(dirname "$0")/.."
+
+# Esporta UID e GID dell'utente corrente
+export UID=$(id -u)
+export GID=$(id -g)
+
+echo "🔧 Configurazione permessi Docker:"
+echo "   UID=${UID}"
+echo "   GID=${GID}"
+echo ""
+
+# Verifica che docker compose sia disponibile
+if ! command -v docker &> /dev/null; then
+    echo "❌ Docker non è installato o non è nel PATH"
+    exit 1
+fi
+
+# Avvia docker compose con i parametri passati
+echo "🚀 Avvio Docker Compose..."
+docker compose up "$@"

@@ -1,0 +1,25 @@
+#!/usr/bin/env bash
+# Script helper per eseguire comandi frontend dentro il container Docker
+# Uso: ./bin/docker-frontend npm install
+#      ./bin/docker-frontend npm start
+#      ./bin/docker-frontend sh
+
+set -e
+
+cd "$(dirname "$0")/.."
+
+# Verifica che docker compose sia disponibile
+if ! command -v docker &> /dev/null; then
+    echo "❌ Docker non è installato o non è nel PATH"
+    exit 1
+fi
+
+# Verifica che il container frontend sia in esecuzione
+if ! docker compose ps frontend | grep -q "Up"; then
+    echo "⚠️  Il container frontend non è in esecuzione."
+    echo "   Avvialo con: docker compose up -d frontend"
+    exit 1
+fi
+
+# Esegui il comando dentro il container
+docker compose exec frontend "$@"

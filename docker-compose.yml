@@ -1,0 +1,28 @@
+services:
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile.dev
+    ports:
+      - "3000:3000"
+    environment:
+      - RAILS_ENV=development
+    volumes:
+      - ./backend:/rails
+      - ./frontend:/frontend:ro
+      - backend_bundle:/usr/local/bundle
+    stdin_open: true
+    tty: true
+
+  frontend:
+    build: ./frontend
+    ports:
+      - "4200:4200"
+    volumes:
+      - ./frontend:/app
+      - /app/node_modules
+    depends_on:
+      - backend
+
+volumes:
+  backend_bundle:

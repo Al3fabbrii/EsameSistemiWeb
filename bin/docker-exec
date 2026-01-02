@@ -1,0 +1,25 @@
+#!/usr/bin/env bash
+# Script helper generico per eseguire comandi dentro il container Docker backend
+# Uso: ./bin/docker-exec bundle install
+#      ./bin/docker-exec rake db:seed
+#      ./bin/docker-exec bash
+
+set -e
+
+cd "$(dirname "$0")/.."
+
+# Verifica che docker compose sia disponibile
+if ! command -v docker &> /dev/null; then
+    echo "❌ Docker non è installato o non è nel PATH"
+    exit 1
+fi
+
+# Verifica che il container backend sia in esecuzione
+if ! docker compose ps backend | grep -q "Up"; then
+    echo "⚠️  Il container backend non è in esecuzione."
+    echo "   Avvialo con: docker compose up -d backend"
+    exit 1
+fi
+
+# Esegui il comando dentro il container
+docker compose exec backend "$@"

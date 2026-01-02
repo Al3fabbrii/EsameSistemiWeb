@@ -1,0 +1,25 @@
+#!/usr/bin/env bash
+# Script helper per eseguire comandi Rails dentro il container Docker
+# Uso: ./bin/docker-rails db:migrate
+#      ./bin/docker-rails console
+#      ./bin/docker-rails generate model User
+
+set -e
+
+cd "$(dirname "$0")/.."
+
+# Verifica che docker compose sia disponibile
+if ! command -v docker &> /dev/null; then
+    echo "❌ Docker non è installato o non è nel PATH"
+    exit 1
+fi
+
+# Verifica che il container backend sia in esecuzione
+if ! docker compose ps backend | grep -q "Up"; then
+    echo "⚠️  Il container backend non è in esecuzione."
+    echo "   Avvialo con: docker compose up -d backend"
+    exit 1
+fi
+
+# Esegui il comando rails dentro il container
+docker compose exec backend rails "$@"
