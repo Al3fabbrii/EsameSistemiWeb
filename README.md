@@ -213,14 +213,31 @@ EsameSistemiWeb/
 ├── frontend/                  # Applicazione Angular
 │   ├── src/
 │   │   ├── app/
-│   │   │   ├── components/   # Componenti Angular
-│   │   │   ├── services/     # Servizi HTTP
-│   │   │   ├── guards/       # Route Guards
-│   │   │   ├── interceptors/ # HTTP Interceptors
-│   │   │   ├── models/       # Interfacce TypeScript
+│   │   │   ├── core           # Core module
+│   |   |   │   ├── guard
+│   |   |   │   ├── interceptors
+│   |   |   │   ├── models
+│   |   |   │   └── services
+│   |   |   ├── features       # Componenti
+│   |   |   │   ├── auth
+│   |   |   │   │   ├── logging-page
+│   |   |   │   │   └── register-page
+│   |   |   │   ├── cart
+│   |   |   │   │   └── cart-page
+│   |   |   │   ├── checkout
+│   |   |   │   │   └── checkout-page
+│   |   |   │   ├── products
+│   |   |   │   │   ├── product-card
+│   |   |   │   │   ├── product-detail-page
+│   |   |   │   │   └── product-page
+│   |   |   │   ├── user-area
+│   |   |   │   │   └── user-area-page
+│   |   |   │   └── wishlist
+│   |   |   │       └── wishlist-page
+│   |   |   ├── shared        # Parti condivise
+│   |   |   |   └── header
 │   │   │   └── app.routes.ts # Routing
-│   │   ├── assets/           # Risorse statiche
-│   │   └── environments/     # Configurazioni ambiente
+│   │   └── main.ts           # Bootstrap application
 │   ├── Dockerfile            # Dockerfile sviluppo
 │   ├── angular.json          # Configurazione Angular
 │   └── package.json          # Dipendenze Node
