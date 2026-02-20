@@ -478,30 +478,6 @@ Frontend (add to cart) → POST /cart/items → Backend (crea CartItem) → DB �
 Frontend (checkout form) → POST /orders → Backend (crea Order + OrderItems, svuota Cart) → DB → Response → Frontend (conferma)
 ```
 
-## Configurazione
-
-### Variabili d'Ambiente Backend
-
-Crea un file `.env` nella directory `backend/` (opzionale):
-
-```env
-RAILS_ENV=development
-DATABASE_URL=sqlite3:db/development.sqlite3
-JWT_SECRET_KEY=your-secret-key-here
-FRONTEND_URL=http://localhost:4200
-```
-
-### Configurazione Frontend
-
-Il file `frontend/src/environments/environment.ts`:
-
-```typescript
-export const environment = {
-  production: false,
-  apiUrl: 'http://localhost:3000'
-};
-```
-
 ## Troubleshooting
 
 ### Problema: Il backend non si avvia
