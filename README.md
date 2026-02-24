@@ -84,7 +84,7 @@ git submodule update --init --recursive
 ### 3. Avvia i container
 
 ```bash
-docker-compose up -d --build
+docker compose up -d --build
 ```
 
 Questo comando:
