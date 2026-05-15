@@ -1,0 +1,79 @@
+<h2 mat-dialog-title>{{ isEdit ? 'Modifica prodotto' : 'Nuovo prodotto' }}</h2>
+
+<mat-dialog-content>
+  <form [formGroup]="form" class="dialog-form">
+
+    <mat-form-field>
+      <mat-label>Titolo</mat-label>
+      <input matInput formControlName="title" />
+      @if (hasError('title', 'required')) {
+        <mat-error>Il titolo è obbligatorio</mat-error>
+      }
+      @if (hasError('title', 'minlength')) {
+        <mat-error>Minimo 2 caratteri</mat-error>
+      }
+    </mat-form-field>
+
+    <mat-form-field>
+      <mat-label>Descrizione</mat-label>
+      <textarea matInput formControlName="description" rows="3"></textarea>
+      @if (hasError('description', 'required')) {
+        <mat-error>La descrizione è obbligatoria</mat-error>
+      }
+    </mat-form-field>
+
+    <div class="row">
+      <mat-form-field>
+        <mat-label>Prezzo (€)</mat-label>
+        <input matInput type="number" formControlName="price" step="0.01" min="0.01" />
+        @if (hasError('price', 'required')) {
+          <mat-error>Il prezzo è obbligatorio</mat-error>
+        }
+        @if (hasError('price', 'min')) {
+          <mat-error>Deve essere maggiore di 0</mat-error>
+        }
+      </mat-form-field>
+
+      <mat-form-field>
+        <mat-label>Prezzo originale (€)</mat-label>
+        <input matInput type="number" formControlName="original_price" step="0.01" min="0.01" />
+        @if (hasError('original_price', 'required')) {
+          <mat-error>Il prezzo originale è obbligatorio</mat-error>
+        }
+      </mat-form-field>
+    </div>
+
+    <div class="row">
+      <mat-form-field>
+        <mat-label>Stock</mat-label>
+        <input matInput type="number" formControlName="stock" min="0" />
+        @if (hasError('stock', 'required')) {
+          <mat-error>Lo stock è obbligatorio</mat-error>
+        }
+        @if (hasError('stock', 'min')) {
+          <mat-error>Non può essere negativo</mat-error>
+        }
+      </mat-form-field>
+
+      <mat-checkbox formControlName="sale">In saldo</mat-checkbox>
+    </div>
+
+    <mat-form-field>
+      <mat-label>URL Thumbnail</mat-label>
+      <input matInput formControlName="thumbnail" placeholder="https://..." />
+    </mat-form-field>
+
+    <mat-form-field>
+      <mat-label>Tag (separati da virgola)</mat-label>
+      <input matInput formControlName="tags" placeholder="es. elettronica, offerta" />
+    </mat-form-field>
+
+  </form>
+</mat-dialog-content>
+
+<mat-dialog-actions align="end">
+  <button mat-button (click)="cancel()">Annulla</button>
+  <button mat-flat-button (click)="submit()">
+    {{ isEdit ? 'Salva modifiche' : 'Crea prodotto' }}
+  </button>
+</mat-dialog-actions>
