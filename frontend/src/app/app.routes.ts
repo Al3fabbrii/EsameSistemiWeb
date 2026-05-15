@@ -2,6 +2,7 @@ import { Routes } from '@angular/router';
 import { CheckoutPage } from './features/checkout/checkout-page/checkout-page';
 import { ProductDetailPage } from './features/products/product-detail-page/product-detail-page';
 import { authGuard } from './core/guard/auth.guard';
+import { adminGuard } from './core/guard/admin-guard';
 
 export const routes: Routes = [
     { path: '', redirectTo: 'products', pathMatch: 'full' },
@@ -22,4 +23,5 @@ export const routes: Routes = [
     },
     { path: 'wishlist', loadComponent: () => import('./features/wishlist/wishlist-page/wishlist-page').then(m => m.WishlistPage), canActivate: [authGuard] },
     { path: 'user-area', loadComponent: () => import('./features/user-area/user-area-page/user-area-page').then(m => m.UserAreaPage), canActivate: [authGuard] },
+    { path: 'admin/products', loadComponent: () => import('./features/admin/admin-products-page/admin-products-page').then(m => m.AdminProductsPage), canActivate: [adminGuard] },
 ];
