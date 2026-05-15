@@ -26,6 +26,10 @@ export class AuthService {
     return !!this.getToken();
   }
 
+  get isAdmin(): boolean {
+    return this.currentUserSubject.getValue()?.role === 'admin';
+  }
+
   login(email: string, password: string): Observable<LoginResponse> {
     return this.http.post<LoginResponse>(`${this.baseUrl}/login`, { email, password })
       .pipe(
