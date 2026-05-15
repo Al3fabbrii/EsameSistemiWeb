@@ -8,11 +8,17 @@ class User < ApplicationRecord
   normalizes :email_address, with: ->(e) { e.strip.downcase }
 
   validates :email_address, presence: true, uniqueness: true, format: { with: URI::MailTo::EMAIL_REGEXP }
+  validates :role, inclusion: { in: %w[customer admin] }
+
+  def admin?
+    role == 'admin'
+  end
 
   def as_json(options = {})
     {
       id: id,
       email: email_address,
+      role: role,
       createdAt: created_at.iso8601
     }
   end

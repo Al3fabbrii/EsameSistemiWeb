@@ -21,6 +21,11 @@ Rails.application.routes.draw do
     end
 
     resources :orders, only: [:index, :create]
+
+    # Admin endpoints (require admin role)
+    namespace :admin do
+      resources :products, only: [:index, :create, :update, :destroy]
+    end
   end
 
   # Health check

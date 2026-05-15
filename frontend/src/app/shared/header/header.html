@@ -25,6 +25,14 @@
     <button matIconButton class="LogoutButton" i18n-aria-label="@@logout-aria" aria-label="Logout" (click)="logout()">
       <mat-icon>logout</mat-icon>
     </button>
+
+    @if (authService.isAdmin) {
+    <!-- Solo admin: pannello di amministrazione -->
+    <button matIconButton class="AdminButton" aria-label="Pannello Admin" (click)="goToAdminProducts()">
+      <mat-icon>admin_panel_settings</mat-icon>
+    </button>
+    } @else {
+    <!-- Solo customer: area utente, carrello, wishlist -->
     <button matIconButton class="UserAreaButton" i18n-aria-label="@@user-area-aria" aria-label="Area utente"
       (click)="goToUserArea()">
       <mat-icon>account_circle</mat-icon>
@@ -36,6 +44,7 @@
       (click)="goToWishlist()">
       <mat-icon>favorites</mat-icon>
     </button>
+    }
 
     } @else {
     <!-- Utente non loggato: mostra bottone login -->

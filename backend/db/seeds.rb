@@ -52,9 +52,17 @@ puts "\nCreating test users..."
 User.find_or_create_by!(email_address: 'user@example.com') do |user|
   user.password = 'password123'
   user.password_confirmation = 'password123'
+  user.role = 'customer'
+end
+
+User.find_or_create_by!(email_address: 'admin@example.com') do |user|
+  user.password = 'admin123'
+  user.password_confirmation = 'admin123'
+  user.role = 'admin'
 end
 
 puts "✅ Created #{User.count} users"
-puts "   - User: user@example.com / password123"
+puts "   - Customer: user@example.com / password123"
+puts "   - Admin:    admin@example.com / admin123"
 
 puts "\n🎉 Seeding completed!"
