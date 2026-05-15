@@ -1,0 +1,114 @@
+<form class="checkout-form" [formGroup]="form" (submit)="onSubmit()">
+    <section formGroupName="customer">
+        <h2 i18n>Dati cliente</h2>
+        <mat-form-field appearance="outline">
+            <mat-label i18n>Nome</mat-label>
+            <input matInput formControlName="firstName" required>
+            @if(hasError('customer.firstName','required'))
+            {
+            <mat-error i18n>
+                Il nome è obbligatorio
+            </mat-error>}
+        </mat-form-field>
+        <mat-form-field appearance="outline">
+            <mat-label i18n>Cognome</mat-label>
+            <input matInput formControlName="lastName" required>
+            @if(hasError('customer.lastName','required'))
+            {
+            <mat-error i18n>
+                Il cognome è obbligatorio
+            </mat-error>}
+        </mat-form-field>
+        <mat-form-field appearance="outline">
+            <mat-label i18n>Email</mat-label>
+            <input matInput formControlName="email" required type="email">
+            @if(hasError('customer.email','required'))
+            {
+            <mat-error i18n>
+                L'email è obbligatoria
+            </mat-error>}
+            @if(hasError('customer.email','email'))
+            {
+            <mat-error i18n>
+                Inserisci un'email valida
+            </mat-error>}
+        </mat-form-field>
+    </section>
+
+    <section formGroupName="address">
+        <h2 i18n>Indirizzo</h2>
+        <mat-form-field appearance="outline">
+            <mat-label i18n>Via</mat-label>
+            <input matInput formControlName="street" required>
+            @if(hasError('address.street','required'))
+            {
+            <mat-error i18n>
+                La via è obbligatoria
+            </mat-error>}
+        </mat-form-field>
+        <mat-form-field appearance="outline">
+            <mat-label i18n>Città</mat-label>
+            <input matInput formControlName="city" required>
+            @if(hasError('address.city','required'))
+            {
+            <mat-error i18n>
+                La città è obbligatoria
+            </mat-error>}
+        </mat-form-field>
+        <mat-form-field appearance="outline">
+            <mat-label i18n>CAP</mat-label>
+            <input matInput formControlName="zip" required>
+            @if(hasError('address.zip','required'))
+            {
+            <mat-error i18n>
+                Il CAP è obbligatorio
+            </mat-error>}
+            @if(hasError('address.zip','pattern'))
+            {
+            <mat-error i18n>
+                Inserisci un CAP valido
+            </mat-error>}
+        </mat-form-field>
+    </section>
+
+
+    <h2 i18n>Metodo di spedizione</h2>
+    <mat-select formControlName="shippingMethod" required>
+        <mat-option value="standard" i18n>Standard</mat-option>
+        <mat-option value="express" i18n>Express</mat-option>
+    </mat-select>
+    <mat-checkbox formControlName="privacy" required i18n>
+        Accetto i termini e le condizioni
+    </mat-checkbox>
+    <button mat-raised-button color="accent" type="submit" [disabled]="loading" i18n>
+        @if (loading) {
+        Elaborazione in corso...
+        } @else {
+        Completa l'ordine
+        }
+    </button>
+
+    @if (orderSuccess) {
+    <div class="success-message" role="status" aria-live="polite">
+        <h3 i18n>✓ Ordine completato con successo!</h3>
+        <p i18n>Il tuo ordine è stato registrato correttamente.</p>
+        <button mat-raised-button color="primary" [routerLink]="['/user-area']" style="margin-top: 8px;" i18n>
+            Visualizza i tuoi ordini
+        </button>
+    </div>
+    }
+
+    @if (orderError) {
+    <div class="error-message" role="status" aria-live="polite">
+        <p i18n>Si è verificato un errore durante la creazione dell'ordine. Riprova.</p>
+    </div>
+    }
+
+    @if(form.invalid && showSummary)
+    {
+    <div class="error-summary" role="status" aria-live="polite">
+        <p i18n>
+            Il form contiene errori. Controlla i campi evidenziati.
+        </p>
+    </div>}
+</form>

@@ -1,0 +1,123 @@
+<div class="user-area-container">
+    <h1 i18n="@@user-area-title">Area Utente</h1>
+
+    @if (authService.currentUser$ | async; as user) {
+    <div class="user-info">
+        <h2 i18n="@@welcome-user">Benvenuto, {{ user.email }}!</h2>
+    </div>
+    }
+
+    <h2 i18n="@@my-orders-title">I Miei Ordini</h2>
+
+    <!-- Filtri -->
+    <mat-card class="filters-card">
+        <mat-card-header>
+            <mat-card-title i18n="@@filters-title">Filtri</mat-card-title>
+        </mat-card-header>
+        <mat-card-content>
+            <div class="filters-container">
+                <div class="filter-row">
+                    <mat-form-field>
+                        <mat-label i18n="@@date-from-label">Data da</mat-label>
+                        <input matInput [matDatepicker]="pickerFrom" [(ngModel)]="dateFrom">
+                        <mat-datepicker-toggle matIconSuffix [for]="pickerFrom"></mat-datepicker-toggle>
+                        <mat-datepicker #pickerFrom></mat-datepicker>
+                    </mat-form-field>
+
+                    <mat-form-field>
+                        <mat-label i18n="@@date-to-label">Data a</mat-label>
+                        <input matInput [matDatepicker]="pickerTo" [(ngModel)]="dateTo">
+                        <mat-datepicker-toggle matIconSuffix [for]="pickerTo"></mat-datepicker-toggle>
+                        <mat-datepicker #pickerTo></mat-datepicker>
+                    </mat-form-field>
+                </div>
+
+                <div class="filter-row">
+                    <mat-form-field>
+                        <mat-label i18n="@@total-min-label">Totale minimo (€)</mat-label>
+                        <input matInput type="number" [(ngModel)]="totalMin" min="0" step="0.01">
+                    </mat-form-field>
+
+                    <mat-form-field>
+                        <mat-label i18n="@@total-max-label">Totale massimo (€)</mat-label>
+                        <input matInput type="number" [(ngModel)]="totalMax" min="0" step="0.01">
+                    </mat-form-field>
+                </div>
+
+                <div class="filter-row">
+                    <mat-form-field>
+                        <mat-label i18n="@@sort-label-orders">Ordinamento</mat-label>
+                        <mat-select [(ngModel)]="filters.sort">
+                            <mat-option value="date_desc" i18n="@@sort-date-desc-orders">Data (più recente)</mat-option>
+                            <mat-option value="date_asc" i18n="@@sort-date-asc-orders">Data (meno recente)</mat-option>
+                            <mat-option value="total_desc" i18n="@@sort-total-desc">Totale (decrescente)</mat-option>
+                            <mat-option value="total_asc" i18n="@@sort-total-asc">Totale (crescente)</mat-option>
+                        </mat-select>
+                    </mat-form-field>
+                </div>
+
+                <div class="filter-actions">
+                    <button mat-raised-button color="primary" (click)="applyFilters()" i18n="@@apply-filters-button">
+                        Applica Filtri
+                    </button>
+                    <button mat-stroked-button (click)="clearFilters()" i18n="@@clear-filters-button">
+                        Pulisci Filtri
+                    </button>
+                </div>
+            </div>
+        </mat-card-content>
+    </mat-card>
+    <!---->
+    @if (loading) {
+    <p style="text-align: center;" i18n="@@loading-orders">Caricamento ordini...</p>
+    } @else if (error) {
+    <p style="text-align: center; color: red;" i18n="@@error-loading-orders">Errore nel caricamento degli ordini</p>
+    <button mat-raised-button color="primary" (click)="loadOrders()" i18n="@@retry-button">Riprova</button>
+    } @else if (orders.length === 0) {
+    <p style="text-align: center;" i18n="@@no-orders">Non sono presenti ordini</p>
+    <button mat-raised-button color="primary" [routerLink]="['/products']" i18n="@@go-to-shop">Vai allo shop</button>
+    } @else {
+    <div class="orders-list">
+        @for (order of orders; track order.id) {
+        <mat-card class="order-card">
+            <mat-card-header>
+                <mat-card-title i18n="@@order-number">Ordine #{{ order.id }}</mat-card-title>
+                <mat-card-subtitle>{{ order.createdAt | date:'dd/MM/yyyy HH:mm' }}</mat-card-subtitle>
+            </mat-card-header>
+            <mat-card-content>
+                <div class="order-details">
+                    <div class="customer-info">
+                        <h3 i18n="@@customer-info-title">Informazioni Cliente</h3>
+                        <p><strong i18n="@@name-label">Nome:</strong> {{ order.customer.firstName }} {{
+                            order.customer.lastName }}</p>
+                        <p><strong i18n="@@email-label-order">Email:</strong> {{ order.customer.email }}</p>
+                    </div>
+                    <div class="address-info">
+                        <h3 i18n="@@shipping-address-title-order">Indirizzo di Spedizione</h3>
+                        <p>{{ order.address.street }}</p>
+                        <p>{{ order.address.zip }} {{ order.address.city }}</p>
+                    </div>
+                    <div class="items-info">
+                        <h3 i18n="@@products-title-order">Prodotti ({{ order.items.length }})</h3>
+                        <ul>
+                            @for (item of order.items; track $index) {
+                            <li>
+                                @if (isOrderItem(item)) {
+                                {{ item.product.title }} - {{ item.unitPrice | currency }} x {{ item.quantity }}
+                                } @else {
+                                {{ item.title }} - {{ item.price | currency }}
+                                }
+                            </li>
+                            }
+                        </ul>
+                    </div>
+                    <div class="total-info">
+                        <h3 i18n="@@total-label-order">Totale: {{ order.total | currency }}</h3>
+                    </div>
+                </div>
+            </mat-card-content>
+        </mat-card>
+        }
+    </div>
+    }
+</div>

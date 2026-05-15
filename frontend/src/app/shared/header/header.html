@@ -1,0 +1,57 @@
+<mat-toolbar class="header">
+  <div class="header-left">
+    <button matIconButton class="MenuButton" i18n-aria-label="@@menu-aria" aria-label="Menu" (click)="goToHome()">
+      <mat-icon>menu</mat-icon>
+    </button>
+
+    <!-- Language Selector -->
+    <button mat-icon-button [matMenuTriggerFor]="languageMenu" class="LanguageButton"
+      i18n-aria-label="@@language-selector-aria" aria-label="Seleziona lingua">
+      <span class="language-flag">{{ localeService.currentLanguage.flag }}</span>
+    </button>
+    <mat-menu #languageMenu="matMenu">
+      @for (lang of localeService.languages; track lang.code) {
+      <button mat-menu-item (click)="changeLanguage(lang.code)"
+        [class.active-language]="lang.code === localeService.currentLanguage.code">
+        <span class="language-flag">{{ lang.flag }}</span>
+        <span>{{ lang.name }}</span>
+      </button>
+      }
+    </mat-menu>
+
+    @if (authService.isLoggedIn) {
+
+    <!-- Utente loggato: mostra bottone logout -->
+    <button matIconButton class="LogoutButton" i18n-aria-label="@@logout-aria" aria-label="Logout" (click)="logout()">
+      <mat-icon>logout</mat-icon>
+    </button>
+    <button matIconButton class="UserAreaButton" i18n-aria-label="@@user-area-aria" aria-label="Area utente"
+      (click)="goToUserArea()">
+      <mat-icon>account_circle</mat-icon>
+    </button>
+    <button matIconButton class="CartButton" i18n-aria-label="@@cart-aria" aria-label="Carrello" (click)="goToCart()">
+      <mat-icon>shopping_cart</mat-icon>
+    </button>
+    <button matIconButton class="WishlistButton" i18n-aria-label="@@wishlist-aria" aria-label="Lista desideri"
+      (click)="goToWishlist()">
+      <mat-icon>favorites</mat-icon>
+    </button>
+
+    } @else {
+    <!-- Utente non loggato: mostra bottone login -->
+    <button matIconButton class="LoginButton" i18n-aria-label="@@login-aria" aria-label="Login" (click)="goToLogin()">
+      <mat-icon>person</mat-icon>
+    </button>
+    <button matIconButton class="RegisterButton" i18n-aria-label="@@register-aria" aria-label="Registrati"
+      (click)="goToRegister()">
+      <mat-icon>person_add</mat-icon>
+    </button>
+    }
+  </div>
+
+  <div class="header-center">
+    <span class="Title" i18n="@@site-title">E-commerce Sistemi Web</span>
+  </div>
+
+  <div class="header-right"></div>
+</mat-toolbar>

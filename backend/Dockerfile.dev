@@ -1,0 +1,44 @@
+FROM ruby:3.4.7-slim
+
+# Install dependencies
+RUN apt-get update -qq && \
+    apt-get install --no-install-recommends -y \
+    build-essential \
+    curl \
+    git \
+    libvips \
+    libyaml-dev \
+    pkg-config \
+    sqlite3 && \
+    rm -rf /var/lib/apt/lists /var/cache/apt/archives
+
+WORKDIR /rails
+
+# Install gems
+COPY Gemfile Gemfile.lock ./
+RUN bundle install
+
+# Copy application code
+COPY . .
+
+# Create entrypoint script to fix permissions and install gems
+RUN echo '#!/bin/bash\n\
+set -e\n\
+\n\
+# Fix permissions for mounted volumes\n\
+chmod -R 755 /rails 2>/dev/null || true\n\
+\n\
+# Install any missing gems (needed because the bundle volume shadows /usr/local/bundle)\n\
+bundle install\n\
+\n\
+# Execute the main command\n\
+exec "$@"' > /usr/local/bin/docker-entrypoint.sh && \
+    chmod +x /usr/local/bin/docker-entrypoint.sh
+
+# Expose port
+EXPOSE 3000
+
+ENTRYPOINT ["/usr/local/bin/docker-entrypoint.sh"]
+
+# Start Rails server
+CMD ["./bin/rails", "server", "-b", "0.0.0.0", "-p", "3000"]

@@ -1,0 +1,51 @@
+<!-- app/features/products/product-detail/product-detail-page.html -->
+@if (product$ | async; as product) {
+<mat-card>
+    <mat-card-header>
+        <mat-card-title>{{ product.title }}</mat-card-title>
+        <mat-card-subtitle>
+            @if (product.sale) {
+            <span class="price-original" i18n="@@original-price-label">
+                Prezzo originale:
+                {{ product.originalPrice | currency:'EUR' }}
+            </span>
+            <span class="price-sale" i18n="@@sale-price-label">
+                Prezzo scontato:
+                {{ product.price | currency:'EUR' }}
+            </span>
+            } @else {
+            <span i18n="@@price-label">Prezzo:</span>
+            {{ product.price | currency:'EUR' }}
+            }
+        </mat-card-subtitle>
+    </mat-card-header>
+    <img mat-card-image [src]="product.thumbnail" [alt]="product.title" class="product-image" />
+    <mat-card-content>
+        <p>{{ product.description }}</p>
+        <div class="stock-info">
+            @if (product.stock > 0) {
+            @if (product.stock <= 5) { <span class="stock-low" i18n="@@stock-low">Solo {{ product.stock }}
+                disponibili!</span>
+                } @else {
+                <span class="stock-available" i18n="@@stock-available">Disponibile ({{ product.stock }} in stock)</span>
+                }
+                } @else {
+                <span class="stock-unavailable" i18n="@@stock-unavailable-detail">Non disponibile</span>
+                }
+        </div>
+    </mat-card-content>
+    <mat-card-actions>
+        <button mat-raised-button color="primary" routerLink="/products" i18n="@@back-to-catalog">
+            Torna al catalogo
+        </button>
+        <button mat-raised-button color="accent" (click)="addToCart(product)" [disabled]="product.stock === 0"
+            i18n="@@add-to-cart-detail">
+            Aggiungi al carrello
+        </button>
+        <button mat-raised-button color="warn" i18n-aria-label="@@add-to-wishlist-detail-aria"
+            aria-label="Aggiungi ai preferiti" (click)="addToWishlist(product)" i18n="@@add-to-wishlist-detail">
+            Aggiungi alla lista preferiti
+        </button>
+    </mat-card-actions>
+</mat-card>
+}

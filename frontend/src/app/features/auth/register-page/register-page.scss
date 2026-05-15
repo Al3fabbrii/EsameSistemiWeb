@@ -1,0 +1,49 @@
+.form-group {
+    margin-bottom: 1.5em;
+    width: 100%;
+}
+
+h1 {
+    text-align: center;
+    font-size: 4em;
+    color: #0d3b66;
+}
+
+mat-label {
+    font-size: 1.25em;
+    color: #1a2a3a;
+}
+
+.error-message {
+    color: #c0392b;
+    text-align: center;
+    margin: 1rem 0;
+    font-size: 0.875rem;
+}
+
+.see-password {
+    position: relative;
+    width: 30px;
+    height: 30px;
+    top: -35px;
+    left: 95%;
+    cursor: pointer;
+}
+
+.error {
+    color: #c0392b;
+    font-size: 0.75rem;
+    margin-top: 0.25rem;
+}
+
+.btn-primary {
+    max-width: 70%;
+    margin: auto;
+}
+
+.form-container {
+    display: flex;
+    flex-direction: column;
+    max-width: 70%;
+    margin: auto;
+}

@@ -1,0 +1,47 @@
+.checkout-form {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    max-width: 50%;
+    margin: 0 auto;
+}
+
+
+.success-message {
+    background-color: #27ae60;
+    color: white;
+    padding: 16px;
+    margin-top: 16px;
+    border-radius: 4px;
+    text-align: center;
+}
+
+.error-message {
+    background-color: #c0392b;
+    color: white;
+    padding: 16px;
+    margin-top: 16px;
+    border-radius: 4px;
+    text-align: center;
+}
+
+.error-summary {
+    color: #c0392b;
+    margin-top: 16px;
+    font-weight: bold;
+}
+
+mat-form-field {
+    width: 100%;
+}
+
+
+
+mat-select {
+    width: 100%;
+}
+
+mat-checkbox {
+    width: 100%;
+    margin-top: 8px;
+}

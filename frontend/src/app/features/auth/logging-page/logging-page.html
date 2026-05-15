@@ -1,0 +1,44 @@
+<div class="login-container">
+    <div class="login-card">
+
+        <h1 i18n>Login</h1>
+        <form [formGroup]="loginForm" (submit)="onSubmit()" class="form-container">
+            <mat-form-field class="form-group">
+                <mat-label for="email" i18n="@@email-label-login">Email</mat-label>
+                <input matInput id="email" type="email" formControlName="email"
+                    i18n-placeholder="@@email-placeholder-login" placeholder="user@example.com" />
+                @if (loginForm.get('email')?.invalid && loginForm.get('email')?.touched) {
+                <div class="error" i18n="@@email-invalid-login">Email non valida</div>
+                }
+            </mat-form-field>
+
+            <mat-form-field class="form-group">
+                <mat-label for="password" i18n="@@password-label-login">Password</mat-label>
+                <input matInput id="password" type="password" formControlName="password"
+                    i18n-placeholder="@@password-placeholder-login" placeholder="Password" />
+                @if (loginForm.get('password')?.invalid && loginForm.get('password')?.touched) {
+                <div class="error" i18n="@@password-required-login">Password richiesta</div>
+                }
+                <button mat-icon-button matSuffix (click)="seePassword()" type="button"
+                    i18n-aria-label="@@show-password-aria-register" aria-label="Mostra password">
+                    <mat-icon>visibility</mat-icon>
+                </button>
+            </mat-form-field>
+
+            @if (errorMessage) {
+            <div class="error-message">{{ errorMessage }}</div>
+            }
+
+            <button mat-raised-button type="submit" [disabled]="loginForm.invalid || isLoading" class="btn-primary"
+                i18n="@@login-button-submit">
+                {{ isLoading ? 'Login in corso...' : 'Login' }}
+            </button>
+        </form>
+
+        <div class="credentials-hint">
+            <p><strong i18n="@@test-credentials">Credenziali di test:</strong></p>
+            <p i18n="@@test-email">Email: user@example.com</p>
+            <p i18n="@@test-password">Password: password123</p>
+        </div>
+    </div>
+</div>

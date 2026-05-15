@@ -1,0 +1,24 @@
+    .container {
+        display: flex;
+        justify-content: center;
+        text-align: center;
+        flex-flow: column wrap;
+    }
+
+    .header {
+        width: 100%;
+        text-align: center;
+    }
+
+    .filters {
+        display: flex;
+        gap: 1rem;
+        flex-wrap: wrap;
+        justify-content: center;
+        margin-bottom: 1.5rem;
+    }
+
+    app-product-card {
+        width: 100%;
+        margin-top: 2em;
+    }

@@ -1,0 +1,58 @@
+<div class="cart-container">
+    <h1 i18n>Carrello</h1>
+
+    @if (cartService.cart$ | async; as cart) {
+    @if (cart.items.length === 0) {
+    <p style="text-align: center;" i18n>Il carrello è vuoto, aggiungi prodotti dalla homepage</p>
+    <button mat-raised-button color="accent" [routerLink]="['/']" i18n>
+        Torna alla homepage
+    </button>
+    } @else {
+    <div class="cart-items">
+        @for (item of cart.items; track item.id) {
+        <mat-card>
+            <mat-card-content>
+                <div class="item-row">
+                    <img [src]="item.product.thumbnail" [alt]="item.product.title" />
+                    <div class="item-info">
+                        <h3>{{ item.product.title }}</h3>
+                        <p>{{ item.unitPrice | currency }}</p>
+                    </div>
+                    <div class="item-quantity">
+                        @if (item.quantity == 1){
+                        <button mat-icon-button disabled>
+                            <mat-icon>remove</mat-icon>
+                        </button>
+                        } @else {
+                        <button mat-icon-button (click)="decreaseQuantity(item)">
+                            <mat-icon>remove</mat-icon>
+                        </button>
+                        }
+                        <span>{{ item.quantity }}</span>
+                        <button mat-icon-button (click)="increaseQuantity(item)">
+                            <mat-icon>add</mat-icon>
+                        </button>
+                    </div>
+                    <div class="item-subtotal">
+                        {{ item.subtotal | currency }}
+                    </div>
+                    <button mat-icon-button color="warn" (click)="removeItem(item)">
+                        <mat-icon>delete</mat-icon>
+                    </button>
+                </div>
+            </mat-card-content>
+        </mat-card>
+        }
+    </div>
+
+    <mat-card class="cart-summary">
+        <mat-card-content>
+            <h2 i18n>Totale: {{ cart.total | currency }}</h2>
+            <button mat-raised-button color="primary" (click)="goToCheckout()" i18n>
+                Procedi al Checkout
+            </button>
+        </mat-card-content>
+    </mat-card>
+    }
+    }
+</div>

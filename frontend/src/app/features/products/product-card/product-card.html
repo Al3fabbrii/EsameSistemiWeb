@@ -1,0 +1,28 @@
+<mat-card class="example-card" appearance="outlined">
+    <mat-card-content>
+        @if (product.thumbnail){
+        <img mat-card-image [src]="product.thumbnail" [alt]="product.title" />
+        }
+        <div class="title">{{product.title}}</div>
+        <span>{{product.price | currency: 'EUR': 'symbol': '1.2-2'}}</span>
+        @if (product.stock <= 5 && product.stock> 0) {
+            <div class="stock-warning" i18n="@@stock-warning">Solo {{product.stock}} disponibili</div>
+            } @else if (product.stock === 0) {
+            <div class="stock-unavailable" i18n="@@stock-unavailable">Non disponibile</div>
+            }
+    </mat-card-content>
+    <mat-card-actions>
+        <button mat-raised-button color="primary" i18n-aria-label="@@add-to-cart-aria" aria-label="Aggiungi al carrello"
+            (click)="addToCart(product)" [disabled]="product.stock === 0" i18n="@@add-to-cart-button">Aggiungi
+            al carrello</button>
+        <button mat-raised-button color="primary" i18n-aria-label="@@details-aria" aria-label="Vai ai dettagli"
+            [routerLink]="['/product', product.id]" i18n="@@details-button">
+            Dettagli
+        </button>
+        <button mat-raised-button color="warn" i18n-aria-label="@@add-to-wishlist-aria"
+            aria-label="Aggiungi ai preferiti" (click)="addToWishlist(product)" i18n="@@add-to-wishlist-button">
+            Aggiungi alla lista preferiti
+        </button>
+    </mat-card-actions>
+
+</mat-card>

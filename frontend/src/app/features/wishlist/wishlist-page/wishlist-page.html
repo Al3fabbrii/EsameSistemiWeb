@@ -1,0 +1,43 @@
+<div class="wishlist-container">
+    <h1 i18n="@@wishlist-title">Lista dei prodotti preferiti</h1>
+
+    @if (wishlistService.wishlist$ | async; as wishlist) {
+    @if (wishlist.items.length === 0) {
+    <p style="text-align: center;" i18n="@@empty-wishlist">Non ci sono prodotti salvati, aggiungi prodotti dalla
+        homepage</p>
+    <button mat-raised-button color="accent" [routerLink]="['/']" i18n="@@back-to-home">
+        Torna alla homepage
+    </button>
+    } @else {
+    <div class="wishlist-items">
+        @for (item of wishlist.items; track item.id) {
+        <mat-card>
+            <mat-card-content>
+                <div class="item-row">
+                    <img [src]="item.product.thumbnail" [alt]="item.product.title" />
+                    <div class="item-info">
+                        <h3>{{ item.product.title }}</h3>
+                        <p>{{ item.product.price | currency }}</p>
+                    </div>
+                    <mat-card-actions>
+                        <button mat-raised-button color="primary" (click)="onAddToCart(item.product)"
+                            i18n="@@add-to-cart-wishlist">
+                            Aggiungi al carrello
+                        </button>
+                        <button mat-raised-button color="primary" [routerLink]="['/product', item.product.id]"
+                            i18n="@@view-details">
+                            Visualizza dettagli
+                        </button>
+                        <button mat-icon-button color="warn" (click)="removeItem(item.id)"
+                            i18n-aria-label="@@remove-item-aria" aria-label="Rimuovi">
+                            <mat-icon>delete</mat-icon>
+                        </button>
+                    </mat-card-actions>
+                </div>
+            </mat-card-content>
+        </mat-card>
+        }
+    </div>
+    }
+    }
+</div>
