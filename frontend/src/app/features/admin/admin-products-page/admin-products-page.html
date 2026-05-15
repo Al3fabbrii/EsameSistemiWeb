@@ -1,0 +1,58 @@
+<section class="container">
+  <header class="page-header">
+    <h2>Gestione Prodotti</h2>
+    <button mat-flat-button (click)="openCreateDialog()">
+      <mat-icon>add</mat-icon>
+      Nuovo prodotto
+    </button>
+  </header>
+
+  <table mat-table [dataSource]="products" class="products-table">
+
+    <ng-container matColumnDef="title">
+      <th mat-header-cell *matHeaderCellDef>Titolo</th>
+      <td mat-cell *matCellDef="let p">{{ p.title }}</td>
+    </ng-container>
+
+    <ng-container matColumnDef="price">
+      <th mat-header-cell *matHeaderCellDef>Prezzo</th>
+      <td mat-cell *matCellDef="let p">{{ p.price | currency: 'EUR' }}</td>
+    </ng-container>
+
+    <ng-container matColumnDef="stock">
+      <th mat-header-cell *matHeaderCellDef>Stock</th>
+      <td mat-cell *matCellDef="let p">{{ p.stock }}</td>
+    </ng-container>
+
+    <ng-container matColumnDef="sale">
+      <th mat-header-cell *matHeaderCellDef>Saldo</th>
+      <td mat-cell *matCellDef="let p">
+        @if (p.sale) {
+          <mat-icon color="accent">sell</mat-icon>
+        } @else {
+          <span>-</span>
+        }
+      </td>
+    </ng-container>
+
+    <ng-container matColumnDef="actions">
+      <th mat-header-cell *matHeaderCellDef>Azioni</th>
+      <td mat-cell *matCellDef="let p">
+        <button mat-icon-button (click)="openEditDialog(p)" aria-label="Modifica">
+          <mat-icon>edit</mat-icon>
+        </button>
+        <button mat-icon-button color="warn" (click)="deleteProduct(p)" aria-label="Elimina">
+          <mat-icon>delete</mat-icon>
+        </button>
+      </td>
+    </ng-container>
+
+    <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+    <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+
+  </table>
+
+  @if (products.length === 0) {
+    <p class="empty-state">Nessun prodotto presente</p>
+  }
+</section>
