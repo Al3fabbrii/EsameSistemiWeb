@@ -54,6 +54,10 @@ export class Header {
     this.router.navigate(['/user-area']);
   }
 
+  goToAdminProducts(): void {
+    this.router.navigate(['/admin/products']);
+  }
+
   changeLanguage(languageCode: string): void {
     this.localeService.switchLanguage(languageCode);
   }
