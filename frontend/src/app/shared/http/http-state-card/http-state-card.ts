@@ -14,9 +14,8 @@ import { ProductsState } from '../http-state';
   templateUrl: './http-state-card.html',
   styleUrl: './http-state-card.scss',
 })
-export class HttpStateCard<T> {
-  @Input() state: ProductsState<T> | null = null;
-  //@Input() state: ProductsState | null = null;
+export class HttpStateCard {
+  @Input() state: ProductsState | null = null;
   @Output() retry = new EventEmitter<void>();
 
   onRetry(): void {

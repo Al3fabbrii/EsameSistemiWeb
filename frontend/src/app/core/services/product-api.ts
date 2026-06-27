@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import { Observable } from 'rxjs';
 import { Product } from '../models/product';
 import { HttpClient, HttpParams } from '@angular/common/http';
@@ -15,8 +15,7 @@ export interface ProductFilters {
 })
 export class ProductApi {
   private readonly baseUrl = 'http://localhost:3000/api';
-
-  constructor(private readonly http: HttpClient) { }
+  private readonly http = inject(HttpClient);
 
   list(filters?: ProductFilters): Observable<Product[]> {
     let params = new HttpParams();

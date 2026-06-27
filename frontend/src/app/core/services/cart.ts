@@ -1,7 +1,7 @@
 import { Injectable, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { BehaviorSubject, Observable, tap } from 'rxjs';
-import { Cart, CartItem } from '../models/cart';
+import { Cart } from '../models/cart';
 
 @Injectable({
   providedIn: 'root',
@@ -21,7 +21,7 @@ export class CartService {
   }
 
   // Aggiungi prodotto al carrello
-  addItem(productId: string, quantity: number = 1): Observable<Cart> {
+  addItem(productId: string, quantity = 1): Observable<Cart> {
     return this.http.post<Cart>(`${this.baseUrl}/items`, {
       product_id: productId,
       quantity

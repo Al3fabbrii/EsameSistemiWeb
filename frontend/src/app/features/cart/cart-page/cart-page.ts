@@ -3,7 +3,8 @@ import { inject } from '@angular/core';
 import { Router } from '@angular/router';
 import { CartService } from '../../../core/services/cart';
 import { NotificationService } from '../../../core/services/notification.service';
-import { MatCardImage, MatCardModule } from "@angular/material/card";
+import { CartItem } from '../../../core/models/cart';
+import { MatCardModule } from "@angular/material/card";
 import { MatButtonModule } from "@angular/material/button";
 import { CommonModule } from "@angular/common";
 import { CurrencyPipe } from "@angular/common";
@@ -31,7 +32,7 @@ export class CartPage implements OnInit {
     this.router.navigate(['/checkout']);
   }
 
-  increaseQuantity(item: any) {
+  increaseQuantity(item: CartItem) {
     this.cartService.updateItem(item.id, item.quantity + 1).subscribe({
       error: (err) => {
         console.error('Error updating quantity:', err);
@@ -42,7 +43,7 @@ export class CartPage implements OnInit {
       }
     });
   }
-  decreaseQuantity(item: any) {
+  decreaseQuantity(item: CartItem) {
     if (item.quantity > 1) {
       this.cartService.updateItem(item.id, item.quantity - 1).subscribe({
         error: (err) => {
@@ -56,7 +57,7 @@ export class CartPage implements OnInit {
     }
   }
 
-  removeItem(item: any) {
+  removeItem(item: CartItem) {
     this.cartService.removeItem(item.id).subscribe();
   }
 
