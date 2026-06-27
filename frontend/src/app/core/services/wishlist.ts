@@ -3,7 +3,7 @@ import { tap } from 'rxjs/internal/operators/tap';
 import { Observable } from 'rxjs/internal/Observable';
 import { HttpClient } from '@angular/common/http';
 import { BehaviorSubject } from 'rxjs/internal/BehaviorSubject';
-import { Wishlist, WishlistItem } from '../models/wishlist';
+import { Wishlist } from '../models/wishlist';
 import { inject } from '@angular/core';
 
 @Injectable({

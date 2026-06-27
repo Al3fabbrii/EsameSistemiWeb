@@ -1,4 +1,4 @@
-export type ProductsState<T> =
+export type ProductsState =
   | { status: 'loading' }
   | { status: 'success' }
   | { status: 'error'; message: string };
