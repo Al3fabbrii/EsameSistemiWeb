@@ -19,7 +19,7 @@ class Api::Admin::ProductsControllerTest < ActionDispatch::IntegrationTest
       price: 10.0,
       original_price: 15.0,
       stock: 5,
-      tags: ["electronics"]
+      tags: [ "electronics" ]
     )
   end
 
@@ -106,7 +106,7 @@ class Api::Admin::ProductsControllerTest < ActionDispatch::IntegrationTest
                price: 50.0,
                original_price: 75.0,
                stock: 100,
-               tags: ["new"]
+               tags: [ "new" ]
              }
            },
            headers: auth_headers_for(@admin)

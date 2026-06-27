@@ -1,7 +1,7 @@
 module Api
   class WishlistItemsController < ApplicationController
     before_action :set_wishlist
-    before_action :set_wishlist_item, only: [:destroy]
+    before_action :set_wishlist_item, only: [ :destroy ]
 
     # POST /api/wishlist/items
     def create
@@ -21,7 +21,7 @@ module Api
         render json: @wishlist.as_json, status: :created
       end
     rescue ActiveRecord::RecordNotFound
-      render json: { error: 'Product not found' }, status: :not_found
+      render json: { error: "Product not found" }, status: :not_found
     rescue ActiveRecord::RecordInvalid => e
       render json: { errors: e.record.errors.full_messages }, status: :unprocessable_entity
     end
@@ -41,7 +41,7 @@ module Api
     def set_wishlist_item
       @wishlist_item = @wishlist.wishlist_items.find(params[:id])
     rescue ActiveRecord::RecordNotFound
-      render json: { error: 'Wishlist item not found' }, status: :not_found
+      render json: { error: "Wishlist item not found" }, status: :not_found
     end
   end
 end

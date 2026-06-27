@@ -256,7 +256,7 @@ class Api::OrdersControllerTest < ActionDispatch::IntegrationTest
   # Verifica che se uno dei prodotti non esiste la richiesta fallisca con 422.
   test "create returns 422 when one of the products does not exist" do
     bad_params = @valid_order_params.deep_dup
-    bad_params[:order][:items] = [{ id: "nonexistent", quantity: 1 }]
+    bad_params[:order][:items] = [ { id: "nonexistent", quantity: 1 } ]
 
     post "/api/orders",
          params: bad_params,
@@ -302,7 +302,7 @@ class Api::OrdersControllerTest < ActionDispatch::IntegrationTest
   # Verifica che la quantity di default sia 1 se non specificata.
   test "create defaults quantity to 1 when not specified" do
     params = @valid_order_params.deep_dup
-    params[:order][:items] = [{ id: "prod-1" }]
+    params[:order][:items] = [ { id: "prod-1" } ]
 
     post "/api/orders",
          params: params,

@@ -11,7 +11,7 @@ class User < ApplicationRecord
   validates :role, inclusion: { in: %w[customer admin] }
 
   def admin?
-    role == 'admin'
+    role == "admin"
   end
 
   def as_json(options = {})

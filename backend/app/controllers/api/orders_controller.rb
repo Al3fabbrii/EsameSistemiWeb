@@ -15,7 +15,7 @@ module Api
       if params[:date_from].present?
         begin
           date_from = DateTime.parse(params[:date_from])
-          @orders = @orders.where('created_at >= ?', date_from)
+          @orders = @orders.where("created_at >= ?", date_from)
         rescue ArgumentError
           # Ignora se la data non è valida
         end
@@ -25,7 +25,7 @@ module Api
       if params[:date_to].present?
         begin
           date_to = DateTime.parse(params[:date_to])
-          @orders = @orders.where('created_at <= ?', date_to)
+          @orders = @orders.where("created_at <= ?", date_to)
         rescue ArgumentError
           # Ignora se la data non è valida
         end
@@ -33,25 +33,25 @@ module Api
 
       # Filtro per totale minimo
       if params[:total_min].present?
-        @orders = @orders.where('total >= ?', params[:total_min].to_f)
+        @orders = @orders.where("total >= ?", params[:total_min].to_f)
       end
 
       # Filtro per totale massimo
       if params[:total_max].present?
-        @orders = @orders.where('total <= ?', params[:total_max].to_f)
+        @orders = @orders.where("total <= ?", params[:total_max].to_f)
       end
 
       # Ordinamento
       @orders = case params[:sort]
-                when 'date_asc'
+      when "date_asc"
                   @orders.order(created_at: :asc)
-                when 'total_asc'
+      when "total_asc"
                   @orders.order(total: :asc)
-                when 'total_desc'
+      when "total_desc"
                   @orders.order(total: :desc)
-                else # 'date_desc' o default
+      else # 'date_desc' o default
                   @orders.order(created_at: :desc)
-                end
+      end
 
       render json: @orders.as_json
     end
@@ -67,7 +67,7 @@ module Api
 
       # Hash per contare le quantità di ogni prodotto nell'ordine
       product_quantities = Hash.new(0)
-      
+
       # Creare order items dall'array di prodotti
       if order_params[:items].present?
         order_params[:items].each do |item|
@@ -79,15 +79,15 @@ module Api
         # Verifica stock disponibile per ogni prodotto prima di creare l'ordine
         product_quantities.each do |product_id, quantity|
           product = Product.find_by(id: product_id)
-          
+
           unless product
             render json: { error: "Prodotto #{product_id} non trovato" }, status: :unprocessable_entity
             return
           end
 
           if product.stock < quantity
-            render json: { 
-              error: "Stock insufficiente per il prodotto '#{product.title}'. Disponibili: #{product.stock}, richiesti: #{quantity}" 
+            render json: {
+              error: "Stock insufficiente per il prodotto '#{product.title}'. Disponibili: #{product.stock}, richiesti: #{quantity}"
             }, status: :unprocessable_entity
             return
           end
@@ -96,7 +96,7 @@ module Api
         # Se tutti i controlli sono passati, crea gli order items
         product_quantities.each do |product_id, quantity|
           product = Product.find(product_id)
-          
+
           @order.order_items.build(
             product_id: product_id,
             quantity: quantity,
@@ -128,13 +128,13 @@ module Api
     end
 
     private
-    #parametri accettati per creare un ordine
+    # parametri accettati per creare un ordine
     def order_params
       params.require(:order).permit(
         :total,
-        customer: [:firstName, :lastName, :email],
-        address: [:street, :city, :zip],
-        items: [:id, :title, :price, :originalPrice, :sale, :thumbnail, :createdAt, :description, :quantity, tags: []]
+        customer: [ :firstName, :lastName, :email ],
+        address: [ :street, :city, :zip ],
+        items: [ :id, :title, :price, :originalPrice, :sale, :thumbnail, :createdAt, :description, :quantity, tags: [] ]
       )
     end
   end

@@ -13,7 +13,7 @@ class Order < ApplicationRecord
     # Precarica i prodotti se non già caricati per evitare N+1
     items_with_products = order_items.includes(:product) unless order_items.loaded?
     items_with_products ||= order_items
-    
+
     {
       id: id,
       userId: user_id,

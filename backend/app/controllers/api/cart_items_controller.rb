@@ -1,7 +1,7 @@
 module Api
   class CartItemsController < ApplicationController
     before_action :set_cart
-    before_action :set_cart_item, only: [:update, :destroy]
+    before_action :set_cart_item, only: [ :update, :destroy ]
 
     # POST /api/cart/items
     def create
@@ -35,7 +35,7 @@ module Api
 
       render json: @cart.as_json, status: :created
     rescue ActiveRecord::RecordNotFound
-      render json: { error: 'Product not found' }, status: :not_found
+      render json: { error: "Product not found" }, status: :not_found
     rescue ActiveRecord::RecordInvalid => e
       render json: { errors: e.record.errors.full_messages }, status: :unprocessable_entity
     end
@@ -72,7 +72,7 @@ module Api
     def set_cart_item
       @cart_item = @cart.cart_items.find(params[:id])
     rescue ActiveRecord::RecordNotFound
-      render json: { error: 'Cart item not found' }, status: :not_found
+      render json: { error: "Cart item not found" }, status: :not_found
     end
   end
 end

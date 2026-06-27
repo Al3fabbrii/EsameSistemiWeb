@@ -30,7 +30,7 @@ module Api
           render json: { errors: @product.errors.full_messages }, status: :unprocessable_entity
         end
       rescue ActiveRecord::RecordNotFound
-        render json: { error: 'Product not found' }, status: :not_found
+        render json: { error: "Product not found" }, status: :not_found
       end
 
       # DELETE /api/admin/products/:id
@@ -39,7 +39,7 @@ module Api
         @product.destroy!
         head :no_content
       rescue ActiveRecord::RecordNotFound
-        render json: { error: 'Product not found' }, status: :not_found
+        render json: { error: "Product not found" }, status: :not_found
       end
 
       private
