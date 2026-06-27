@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { Product } from '../models/product';
@@ -20,8 +20,7 @@ export interface ProductPayload {
 })
 export class AdminProductApi {
   private readonly baseUrl = 'http://localhost:3000/api/admin';
-
-  constructor(private readonly http: HttpClient) {}
+  private readonly http = inject(HttpClient);
 
   list(): Observable<Product[]> {
     return this.http.get<Product[]>(`${this.baseUrl}/products`);
