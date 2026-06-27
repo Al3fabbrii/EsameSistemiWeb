@@ -11,7 +11,7 @@ class Api::ProductsControllerTest < ActionDispatch::IntegrationTest
       original_price: 1299.99,
       sale: true,
       stock: 10,
-      tags: ["electronics", "computers"]
+      tags: [ "electronics", "computers" ]
     )
 
     @product2 = Product.create!(
@@ -22,7 +22,7 @@ class Api::ProductsControllerTest < ActionDispatch::IntegrationTest
       original_price: 39.99,
       sale: false,
       stock: 50,
-      tags: ["electronics", "accessories"]
+      tags: [ "electronics", "accessories" ]
     )
 
     @product3 = Product.create!(
@@ -33,7 +33,7 @@ class Api::ProductsControllerTest < ActionDispatch::IntegrationTest
       original_price: 179.99,
       sale: true,
       stock: 0,
-      tags: ["electronics", "accessories"]
+      tags: [ "electronics", "accessories" ]
     )
   end
 

@@ -1,6 +1,6 @@
 module Api
   class AuthController < ApplicationController
-    skip_before_action :authenticate_user!, only: [:login, :register, :logout]
+    skip_before_action :authenticate_user!, only: [ :login, :register, :logout ]
 
     # POST /api/auth/login
     def login
@@ -13,7 +13,7 @@ module Api
           user: user.as_json
         }, status: :ok
       else
-        render json: { error: 'Invalid email or password' }, status: :unauthorized
+        render json: { error: "Invalid email or password" }, status: :unauthorized
       end
     end
 
@@ -29,7 +29,7 @@ module Api
     end
     # POST /api/auth/register
     def register
-      user = User.new(email_address: params[:email], password: params[:password]) 
+      user = User.new(email_address: params[:email], password: params[:password])
       if user.save
         token = generate_jwt_token(user)
         render json: {
@@ -48,7 +48,7 @@ module Api
         user_id: user.id,
         exp: 24.hours.from_now.to_i
       }
-      JWT.encode(payload, Rails.application.secret_key_base, 'HS256')
+      JWT.encode(payload, Rails.application.secret_key_base, "HS256")
     end
   end
 end

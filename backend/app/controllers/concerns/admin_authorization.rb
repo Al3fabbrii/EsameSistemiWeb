@@ -9,7 +9,7 @@ module AdminAuthorization
 
   def require_admin!
     unless current_user&.admin?
-      render json: { error: 'Forbidden: admin access required' }, status: :forbidden
+      render json: { error: "Forbidden: admin access required" }, status: :forbidden
     end
   end
 end

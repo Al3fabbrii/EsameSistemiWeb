@@ -131,7 +131,7 @@ class ProductTest < ActiveSupport::TestCase
       original_price: 15.99,
       sale: true,
       thumbnail: "http://example.com/image.jpg",
-      tags: ["electronics", "sale"],
+      tags: [ "electronics", "sale" ],
       stock: 10
     )
 
@@ -189,7 +189,7 @@ class ProductTest < ActiveSupport::TestCase
       original_price: 15.99,
       sale: true,
       thumbnail: "http://example.com/image.jpg",
-      tags: ["electronics", "sale"],
+      tags: [ "electronics", "sale" ],
       stock: 10
     )
 
@@ -199,7 +199,7 @@ class ProductTest < ActiveSupport::TestCase
     assert_equal "A test product", json[:description]
     assert json[:sale]
     assert_equal "http://example.com/image.jpg", json[:thumbnail]
-    assert_equal ["electronics", "sale"], json[:tags]
+    assert_equal [ "electronics", "sale" ], json[:tags]
     assert_equal 10, json[:stock]
   end
 

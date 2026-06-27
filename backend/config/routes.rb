@@ -2,29 +2,29 @@ Rails.application.routes.draw do
   # E-commerce API endpoints
   namespace :api do
     # Auth endpoints (JWT)
-    post 'auth/login', to: 'auth#login'
-    post 'auth/logout', to: 'auth#logout'
-    get 'auth/me', to: 'auth#me'
-    post 'auth/register', to: 'auth#register'
+    post "auth/login", to: "auth#login"
+    post "auth/logout", to: "auth#logout"
+    get "auth/me", to: "auth#me"
+    post "auth/register", to: "auth#register"
 
     # Public endpoints
-    resources :products, only: [:index, :show]
+    resources :products, only: [ :index, :show ]
 
 
     # Protected endpoints (require authentication)
-    resource :cart, only: [:show] do
-      resources :items, only: [:create, :update, :destroy], controller: 'cart_items'
+    resource :cart, only: [ :show ] do
+      resources :items, only: [ :create, :update, :destroy ], controller: "cart_items"
     end
 
-    resource :wishlist, only: [:show] do
-      resources :items, only: [:create, :destroy], controller: 'wishlist_items'
+    resource :wishlist, only: [ :show ] do
+      resources :items, only: [ :create, :destroy ], controller: "wishlist_items"
     end
 
-    resources :orders, only: [:index, :create]
+    resources :orders, only: [ :index, :create ]
 
     # Admin endpoints (require admin role)
     namespace :admin do
-      resources :products, only: [:index, :create, :update, :destroy]
+      resources :products, only: [ :index, :create, :update, :destroy ]
     end
   end
 
