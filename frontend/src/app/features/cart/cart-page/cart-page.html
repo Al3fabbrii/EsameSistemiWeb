@@ -19,7 +19,7 @@
                         <p>{{ item.unitPrice | currency }}</p>
                     </div>
                     <div class="item-quantity">
-                        @if (item.quantity == 1){
+                        @if (item.quantity === 1){
                         <button mat-icon-button disabled>
                             <mat-icon>remove</mat-icon>
                         </button>
