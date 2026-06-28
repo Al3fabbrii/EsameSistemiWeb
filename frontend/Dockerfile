@@ -2,9 +2,12 @@ FROM node:20
 
 WORKDIR /app
 
-# Install dependencies
+# Install dependencies.
+# --legacy-peer-deps is required because @angular/animations 21.2.x has a strict
+# peer dep on @angular/core 21.2.x while other Angular packages are pinned to 21.0.x.
+# npm ci is preferred over npm install for reproducible builds from package-lock.json.
 COPY package.json package-lock.json ./
-RUN npm install && npm cache clean --force
+RUN npm ci --legacy-peer-deps && npm cache clean --force
 
 # Install Angular CLI globally
 RUN npm install -g @angular/cli
