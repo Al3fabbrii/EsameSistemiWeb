@@ -1,23 +1,37 @@
-# This file should ensure the existence of records required to run the application in every environment (production,
-# development, test). The code here should be idempotent so that it can be executed at any point in every environment.
-# The data can then be loaded with the bin/rails db:seed command (or created alongside the database with db:setup).
+# This file should ensure the existence of records required to run the application in every
+# environment (production, development, test). The code here should be idempotent so that
+# it can be executed at any point in every environment.
+#
+# Load with:
+#   bin/rails db:seed                          (development)
+#   RAILS_ENV=test bin/rails db:seed           (test, for E2E runs)
 
 require 'json'
 
-puts "🌱 Seeding database..."
+puts "🌱 Seeding database (#{Rails.env})..."
 
-# Pulisci dati esistenti
-puts "Cleaning existing products..."
+# ---------------------------------------------------------------------------
+# Reset transactional data so each seed run starts from a clean state.
+# Products and users below are then re-created idempotently.
+# ---------------------------------------------------------------------------
+puts "\nResetting transactional data..."
+OrderItem.destroy_all
+Order.destroy_all
+CartItem.destroy_all
+Cart.destroy_all
+WishlistItem.destroy_all
+Wishlist.destroy_all
 Product.destroy_all
 
-# Leggi i dati dal mock API
+# ---------------------------------------------------------------------------
+# Products: import from the mock API json bundled with the frontend.
+# ---------------------------------------------------------------------------
 mock_data_path = Rails.root.join('..', 'frontend', 'shop-mock-api', 'db.json')
 
 if File.exist?(mock_data_path)
   mock_data = JSON.parse(File.read(mock_data_path))
+  puts "\nImporting #{mock_data['products'].size} products from mock API..."
 
-  # Importa i prodotti
-  puts "Importing products from mock API..."
   mock_data['products'].each do |product|
     Product.create!(
       id: product['id'],
@@ -28,25 +42,22 @@ if File.exist?(mock_data_path)
       sale: product['sale'],
       thumbnail: product['thumbnail'],
       tags: product['tags'],
-      stock: rand(10..100), # Stock casuale tra 10 e 100
+      stock: rand(10..100), # randomic stock between 10 and 100
       created_at: product['createdAt'],
       updated_at: product['createdAt']
     )
   end
 
-  puts "✅ Successfully imported #{Product.count} products"
+  puts "✅ Imported #{Product.count} products"
 else
   puts "⚠️  Mock data file not found at #{mock_data_path}"
-  puts "   Skipping product import (run this in development or add products manually)"
+  puts "   Skipping product import."
 end
-puts "🎉 Seeding completed!"
-# This file should ensure the existence of records required to run the application in every environment (production,
-# development, test). The code here should be idempotent so that it can be executed at any point in every environment.
-# The data can then be loaded with the bin/rails db:seed command (or created alongside the database with db:setup).
 
-puts "🌱 Seeding database..."
-
-# Crea utenti di test
+# ---------------------------------------------------------------------------
+# Test users (customer + admin) — used by the Playwright E2E suite.
+# Credentials are intentionally weak and hard-coded: they are TEST accounts.
+# ---------------------------------------------------------------------------
 puts "\nCreating test users..."
 
 User.find_or_create_by!(email_address: 'user@example.com') do |user|
@@ -61,7 +72,7 @@ User.find_or_create_by!(email_address: 'admin@example.com') do |user|
   user.role = 'admin'
 end
 
-puts "✅ Created #{User.count} users"
+puts "✅ #{User.count} users present"
 puts "   - Customer: user@example.com / password123"
 puts "   - Admin:    admin@example.com / admin123"
 
