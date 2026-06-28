@@ -1,5 +1,5 @@
 import { Component, inject, OnInit } from '@angular/core';
-import { MatTableModule } from '@angular/material/table';
+import { MatTableModule, MatTableDataSource } from '@angular/material/table';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatDialog } from '@angular/material/dialog';
@@ -20,8 +20,15 @@ export class AdminProductsPage implements OnInit {
   private dialog = inject(MatDialog);
   private notify = inject(NotificationService);
 
-  products: Product[] = [];
+  // mat-table with a plain array as [dataSource] does not re-render when the
+  // array is reassigned; MatTableDataSource fixes this and also enables
+  // built-in sorting/filtering if needed later.
+  readonly dataSource = new MatTableDataSource<Product>([]);
   displayedColumns = ['title', 'price', 'stock', 'sale', 'actions'];
+
+  get products(): Product[] {
+    return this.dataSource.data;
+  }
 
   ngOnInit(): void {
     this.loadProducts();
@@ -29,7 +36,7 @@ export class AdminProductsPage implements OnInit {
 
   private loadProducts(): void {
     this.api.list().subscribe({
-      next: products => this.products = products,
+      next: products => (this.dataSource.data = products),
       error: () => this.notify.showError('Errore nel caricamento dei prodotti')
     });
   }
