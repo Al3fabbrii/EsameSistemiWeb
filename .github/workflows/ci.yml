@@ -227,6 +227,99 @@ jobs:
           cache-to: type=gha,mode=max,scope=frontend
 
   # ---------------------------------------------------------------------------
+  # E2E (Playwright) — full-stack flow tests
+  # Boots backend + frontend, runs Playwright suite, uploads trace on failure.
+  # ---------------------------------------------------------------------------
+  e2e:
+    name: E2E (Playwright)
+    needs: [changes, backend-test, frontend-test]
+    if: |
+      always()
+      && !cancelled()
+      && !contains(needs.*.result, 'failure')
+      && (needs.changes.outputs.backend == 'true'
+          || needs.changes.outputs.frontend == 'true')
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+
+      # --- Backend setup ---
+      - name: Set up Ruby
+        uses: ruby/setup-ruby@v1
+        with:
+          working-directory: backend
+          bundler-cache: true
+
+      - name: Prepare and seed test database
+        working-directory: backend
+        env:
+          RAILS_ENV: test
+        run: |
+          bin/rails db:test:prepare
+          bin/rails db:seed
+
+      - name: Start Rails server (background)
+        working-directory: backend
+        env:
+          RAILS_ENV: test
+        run: |
+          bin/rails server -p 3000 -d
+          # Wait until Rails answers on port 3000.
+          for i in $(seq 1 30); do
+            if curl -sf http://localhost:3000/api/products > /dev/null; then
+              echo "Rails is up"
+              break
+            fi
+            sleep 1
+          done
+
+      # --- Frontend setup ---
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+          cache-dependency-path: frontend/package-lock.json
+
+      - name: Install dependencies
+        working-directory: frontend
+        run: npm ci --legacy-peer-deps
+
+      - name: Install Playwright browsers
+        working-directory: frontend
+        run: npx playwright install --with-deps chromium
+
+      - name: Start Angular dev server (background)
+        working-directory: frontend
+        run: |
+          npm start &
+          # Wait until Angular answers on port 4200.
+          for i in $(seq 1 60); do
+            if curl -sf http://localhost:4200 > /dev/null; then
+              echo "Angular is up"
+              break
+            fi
+            sleep 2
+          done
+
+      # --- Run the E2E suite ---
+      - name: Run Playwright tests
+        working-directory: frontend
+        env:
+          REUSE_SERVER: '1'   # Skip Playwright's own webServer block (we boot here)
+          CI: '1'
+        run: npx playwright test
+
+      # --- Upload report on failure ---
+      - name: Upload Playwright report
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: playwright-report-${{ github.run_id }}
+          path: frontend/playwright-report/
+          retention-days: 7
+
+  # ---------------------------------------------------------------------------
   # Gate finale: aggregato per branch protection rules
   # ---------------------------------------------------------------------------
   ci-success:
@@ -238,6 +331,7 @@ jobs:
       - frontend-lint
       - frontend-test
       - docker-build
+      - e2e
     if: always()
     runs-on: ubuntu-latest
     steps:
