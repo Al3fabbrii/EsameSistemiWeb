@@ -112,4 +112,31 @@ class Api::WishlistItemsControllerTest < ActionDispatch::IntegrationTest
 
     assert_response :not_found
   end
+
+  # ---------------------------------------------------------------------------
+  # Property-based testing
+  # ---------------------------------------------------------------------------
+
+  # Invariante di idempotenza HTTP: POST /api/wishlist/items con lo stesso
+  # product_id eseguito N volte (N ≥ 2) lascia comunque la wishlist con
+  # esattamente 1 item. Verifica che il backend non duplichi e che la prima
+  # invocazione restituisca 201 e le successive 200.
+  test "POST /api/wishlist/items è idempotente per N invocazioni ripetute (PBT)" do
+    property_of {
+      range(2, 8)
+    }.check(15) do |n|
+      @wishlist.wishlist_items.destroy_all
+
+      n.times do |i|
+        post "/api/wishlist/items",
+             params: { product_id: @product.id },
+             headers: auth_headers_for(@user)
+        assert_includes [ 200, 201 ], response.status,
+          "invocazione #{i + 1} dovrebbe rispondere 200 o 201, non #{response.status}"
+      end
+
+      assert_equal 1, @wishlist.wishlist_items.count,
+        "dopo #{n} POST dovrebbe esserci esattamente 1 item nella wishlist"
+    end
+  end
 end

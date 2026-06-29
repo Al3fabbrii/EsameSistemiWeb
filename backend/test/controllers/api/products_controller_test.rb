@@ -237,4 +237,25 @@ class Api::ProductsControllerTest < ActionDispatch::IntegrationTest
     assert_response :success
     # Non dovrebbe richiedere autenticazione
   end
+
+  # ---------------------------------------------------------------------------
+  # Property-based testing
+  # ---------------------------------------------------------------------------
+
+  # Invariante del filtro: per qualsiasi price_min ≥ 0, ogni prodotto restituito
+  # deve avere price >= price_min. Generiamo soglie casuali invece di pochi
+  # casi esemplificativi per catturare regressioni alle estremità del range.
+  test "GET /api/products?price_min=X restituisce solo prodotti con price >= X (PBT)" do
+    property_of {
+      range(0, 2000)
+    }.check(30) do |price_min|
+      get "/api/products", params: { price_min: price_min }
+      assert_response :success
+      body = JSON.parse(response.body)
+      body.each do |product|
+        assert_operator product["price"], :>=, price_min,
+          "price_min=#{price_min} ma '#{product['title']}' ha price #{product['price']}"
+      end
+    end
+  end
 end
