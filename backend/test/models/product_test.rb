@@ -1,4 +1,5 @@
 require "test_helper"
+require "bigdecimal"
 
 class ProductTest < ActiveSupport::TestCase
   # Test delle validazioni - title
@@ -201,6 +202,56 @@ class ProductTest < ActiveSupport::TestCase
     assert_equal "http://example.com/image.jpg", json[:thumbnail]
     assert_equal [ "electronics", "sale" ], json[:tags]
     assert_equal 10, json[:stock]
+  end
+
+  # ---------------------------------------------------------------------------
+  # Property-based testing
+  # ---------------------------------------------------------------------------
+
+  # Invariante: ogni price > 0 supera la validazione del campo price,
+  # ogni price <= 0 la fa fallire con il messaggio atteso.
+  test "validazione price riflette sempre il confine zero (PBT)" do
+    # price positivo → nessun errore su :price
+    property_of {
+      range(1, 1_000_000)
+    }.check(50) do |cents|
+      price = BigDecimal(cents) / 100
+      p = Product.new(title: "T", price: price, original_price: 10, stock: 1)
+      p.valid?
+      assert_empty p.errors[:price], "price=#{price.to_s('F')} non dovrebbe generare errori su :price"
+    end
+
+    # price non positivo → errore "must be greater than 0"
+    property_of {
+      range(-1_000_000, 0)
+    }.check(50) do |cents|
+      price = BigDecimal(cents) / 100
+      p = Product.new(title: "T", price: price, original_price: 10, stock: 1)
+      assert_not p.valid?, "price=#{price.to_s('F')} dovrebbe essere invalido"
+      assert_includes p.errors[:price], "must be greater than 0"
+    end
+  end
+
+  # Roundtrip: per qualsiasi (price, original_price, stock) salvati, as_json
+  # restituisce gli stessi valori (price/originalPrice come Float, stock intatto).
+  test "as_json restituisce sempre i valori numerici salvati (PBT)" do
+    property_of {
+      [ range(1, 100_000), range(1, 100_000), range(0, 1000) ]
+    }.check(50) do |price_cents, orig_cents, stock|
+      price = BigDecimal(price_cents) / 100
+      orig  = BigDecimal(orig_cents)  / 100
+      p = Product.create!(
+        id: "pbt-asjson-#{SecureRandom.hex(8)}",
+        title: "T",
+        price: price,
+        original_price: orig,
+        stock: stock
+      )
+      json = p.as_json
+      assert_equal price.to_f, json[:price]
+      assert_equal orig.to_f,  json[:originalPrice]
+      assert_equal stock,      json[:stock]
+    end
   end
 
   # Test delle relazioni con order_items

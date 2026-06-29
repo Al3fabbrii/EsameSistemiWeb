@@ -1,4 +1,5 @@
 require "test_helper"
+require "bigdecimal"
 
 class CartItemTest < ActiveSupport::TestCase
   setup do
@@ -162,5 +163,37 @@ class CartItemTest < ActiveSupport::TestCase
 
     assert_instance_of Float, json[:unitPrice]
     assert_instance_of Float, json[:subtotal]
+  end
+
+  # ---------------------------------------------------------------------------
+  # Property-based testing (subtotal)
+  #
+  # subtotal è una pura funzione (quantity * unit_price), perfetta per il PBT:
+  # verifichiamo invarianti universali invece di casi singoli. I prezzi sono
+  # generati come centesimi interi e convertiti in BigDecimal per evitare
+  # imprecisioni del Float (la colonna unit_price è :decimal in DB).
+  # ---------------------------------------------------------------------------
+
+  test "subtotal coincide sempre con quantity * unit_price (PBT)" do
+    property_of {
+      [ range(1, 1000), range(1, 100_000) ]
+    }.check(100) do |quantity, price_cents|
+      unit_price = BigDecimal(price_cents) / 100
+      item = CartItem.new(quantity: quantity, unit_price: unit_price)
+      assert_equal quantity * unit_price, item.subtotal,
+        "subtotal dovrebbe essere quantity (#{quantity}) * unit_price (#{unit_price.to_s('F')})"
+    end
+  end
+
+  test "subtotal scala linearmente con la quantità (PBT)" do
+    property_of {
+      [ range(1, 500), range(1, 100_000) ]
+    }.check(100) do |quantity, price_cents|
+      unit_price = BigDecimal(price_cents) / 100
+      single = CartItem.new(quantity: quantity, unit_price: unit_price).subtotal
+      double = CartItem.new(quantity: quantity * 2, unit_price: unit_price).subtotal
+      assert_equal single * 2, double,
+        "raddoppiando la quantità il subtotale dovrebbe raddoppiare"
+    end
   end
 end
