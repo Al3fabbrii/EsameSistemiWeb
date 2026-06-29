@@ -90,4 +90,34 @@ class WishlistItemTest < ActiveSupport::TestCase
     assert_equal @product.id, product_json[:id]
     assert_equal "Wish Product", product_json[:title]
   end
+
+  # ---------------------------------------------------------------------------
+  # Property-based testing
+  # ---------------------------------------------------------------------------
+
+  # Invariante di unicità: a prescindere da quante volte si tenti di aggiungere
+  # lo stesso prodotto alla stessa wishlist, ne resta salvato esattamente uno
+  # e tutti i tentativi successivi sono invalid?.
+  test "aggiungere N volte lo stesso prodotto alla stessa wishlist lascia 1 item (PBT)" do
+    property_of {
+      range(2, 10)
+    }.check(20) do |n|
+      fresh_user = User.create!(
+        email_address: "pbt-wish-#{SecureRandom.hex(8)}@example.com",
+        password: "password123"
+      )
+      fresh_wishlist = Wishlist.create!(user: fresh_user)
+
+      WishlistItem.create!(wishlist: fresh_wishlist, product: @product)
+
+      (n - 1).times do |i|
+        duplicate = WishlistItem.new(wishlist: fresh_wishlist, product: @product)
+        assert_not duplicate.valid?,
+          "il tentativo n. #{i + 2} di aggiungere lo stesso prodotto dovrebbe essere invalido"
+      end
+
+      assert_equal 1, fresh_wishlist.wishlist_items.count,
+        "dopo #{n} tentativi dovrebbe esserci esattamente 1 item nella wishlist"
+    end
+  end
 end

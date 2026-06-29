@@ -234,4 +234,27 @@ class UserTest < ActiveSupport::TestCase
     user = User.create!(email_address: "test@example.com", password: "password123")
     assert_match(/\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}/, user.as_json[:createdAt])
   end
+
+  # ---------------------------------------------------------------------------
+  # Property-based testing
+  # ---------------------------------------------------------------------------
+
+  # Invariante: per qualsiasi password salvata, l'utente si autentica con la
+  # stessa password e NON si autentica con una versione modificata.
+  # Verifica end-to-end has_secure_password + BCrypt senza dipendere da casi
+  # esemplificativi codificati a mano.
+  test "qualsiasi password salvata si autentica con se stessa e non con altre (PBT)" do
+    property_of {
+      sized(20) { string(:alnum) }
+    }.check(20) do |password|
+      user = User.create!(
+        email_address: "pbt-auth-#{SecureRandom.hex(8)}@example.com",
+        password: password
+      )
+      assert user.authenticate(password),
+        "la password salvata '#{password}' dovrebbe autenticarsi"
+      assert_not user.authenticate(password + "x"),
+        "una password modificata non dovrebbe autenticarsi"
+    end
+  end
 end
