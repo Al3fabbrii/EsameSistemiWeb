@@ -130,6 +130,14 @@ jobs:
       - name: Run Minitest
         run: bin/rails test
 
+      - name: Upload coverage report (SimpleCov)
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: backend-coverage-${{ github.run_id }}
+          path: backend/coverage/
+          retention-days: 7
+
   # ---------------------------------------------------------------------------
   # Frontend: lint (ESLint via ng lint)
   # ---------------------------------------------------------------------------
@@ -181,8 +189,16 @@ jobs:
       - name: Install dependencies
         run: npm ci --legacy-peer-deps
 
-      - name: Run Vitest
-        run: npx ng test --watch=false
+      - name: Run Vitest (with coverage)
+        run: npx ng test --watch=false --coverage
+
+      - name: Upload coverage report (Istanbul)
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: frontend-coverage-${{ github.run_id }}
+          path: frontend/coverage/
+          retention-days: 7
 
   # ---------------------------------------------------------------------------
   # Docker build (Continuous Delivery — costruisce ma NON pubblica)
