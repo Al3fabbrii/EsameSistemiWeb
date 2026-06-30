@@ -97,21 +97,6 @@ rimuove in cascata anche le voci di carrello, wishlist e ordine che lo
 referenziano. Le richieste agli endpoint amministrativi provenienti da
 utenti non admin ricevono risposta `403`.
 
-## Cosa il sistema NON fa
-
-Esclusioni esplicite, per fissare bene il perimetro:
-
-- **Pagamenti reali**: nessuna integrazione con Stripe, PayPal o gateway
-  analoghi. L'evento "pagamento" è considerato sempre riuscito.
-- **Spedizione reale**: nessun tracking presso vettori esterni. Il
-  passaggio a `shipped` è una transizione manuale dell'admin, non un
-  collegamento a un'API di corriere.
-- **Notifiche email**: non vengono inviate email transazionali (conferma
-  ordine, password reset, ecc.).
-- **Resi e rimborsi**: l'unico modo di "annullare" un ordine è la
-  transizione a `cancelled` prima della spedizione.
-- **Recensioni o rating prodotti**.
-- **Multi-tenancy**: un'istanza serve un solo esercente.
 
 ## Qualità attese
 
